@@ -1,2 +1,5 @@
 *.vim
 /.vscode/**
+/build/**
+/dist/**
+*.egg-info
