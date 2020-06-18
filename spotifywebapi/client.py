@@ -1,9 +1,8 @@
 import requests
 import json
-import datetime
 import time
 
-from .exceptions import StatusCodeError, Error
+from .exceptions import StatusCodeError, SpotifyError
 from .user import User
 
 class Spotify:
@@ -24,7 +23,7 @@ class Spotify:
             self.accessToken = r.json()['access_token']
             self.headers = {'Authorization': 'Bearer ' + self.accessToken}
         else:
-            raise Error('Error! Could not successfully obtain access token with these credentials')
+            raise SpotifyError('Error! Could not successfully obtain access token with these credentials')
 
     def refreshAccessToken(self):
         self.__init__(self.client_id, self.client_secret)
@@ -36,12 +35,12 @@ class Spotify:
         if r.status_code == 200:
             return r.json()
         else:
-            raise Error('Error! Could not retrieve playlists for ' + userid)
+            raise SpotifyError('Error! Could not retrieve playlists for ' + userid)
 
     def getUserPlaylists(self, user):
         userid = user['id']
         if userid is None:
-            raise Error('Error! Could not determine user id from user')
+            raise SpotifyError('Error! Could not determine user id from user')
 
         playlists = []
         url = self.baseurl + '/users/' + userid + '/playlists?limit=50'
@@ -72,7 +71,7 @@ class Spotify:
         if (r.status_code == 200):
             return User(self, refreshToken, r.json()['access_token'])
         else:
-            raise Error('Error! Could not authenticate user with refresh token')
+            raise SpotifyError('Error! Could not authenticate user with refresh token')
 
     def getPlaylistFromId(self, playlist):
         playlistid = playlist.replace('spotify:playlist:', '')
@@ -81,12 +80,16 @@ class Spotify:
         if r.status_code == 200:
             return r.json()
         else:
-            raise Error('Error! Could not retrieve playlist from ' + playlist)
+            raise SpotifyError('Error! Could not retrieve playlist from ' + playlist)
 
     def getTracksFromItem(self, item):
-        url = item['tracks']['href']
+        try:
+            url = item['tracks']['href']
+        except TypeError:
+            raise SpotifyError('Error! Not a valid item')
+
         if url is None:
-            raise Error('Error! Not a valid item')
+            raise SpotifyError('Error! Could not find url')
 
         tracks = []
         while True:
