@@ -24,5 +24,5 @@ sp = spotifywebapi.Spotify(os.getenv('SPOTIFY_CLIENT_ID'), os.getenv('SPOTIFY_CL
 ### User
 
 ```python
-user = sp.getAuthUser(refreshtoken)
+user = sp.getAuthUser(refreshtoken_for_user)
 ```
