@@ -13,6 +13,7 @@ Setup
 export SPOTIFY_CLIENT_ID=client_id_here
 export SPOTIFY_CLIENT_SECRET=client_secret_here
 ```
+### Client
 
 ```python
 import spotifywebapi, os
