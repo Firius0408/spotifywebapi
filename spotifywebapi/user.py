@@ -36,12 +36,13 @@ class User:
 
     def createPlaylist(self, name, public=None, collaborative=None, description=None):
         url = self.baseurl + '/users/' + self.user['id'] + '/playlists'
-        payload = json.dumps({
+        data = {
             'name': name,
             'public': public,
             'collaborative': collaborative,
             'description': description
-            })
+            }
+        payload = json.dumps({k: v for k, v in data.items() if v is not None})
         r = requests.post(url, headers=self.contentHeaders, data=payload)
         status_code = r.status_code
         if status_code != 200 and status_code != 201:
