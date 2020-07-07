@@ -31,8 +31,11 @@ class User:
         try:
             return self.playlists
         except AttributeError:
-            self.playlists = self.client.getUserPlaylists(self.user)
-            return self.playlists
+            return self.refreshPlaylists()
+        
+    def refreshPlaylists(self):
+        self.playlists = self.client.getUserPlaylists(self.user)
+        return self.playlists
 
     def createPlaylist(self, name, public=None, collaborative=None, description=None):
         url = self.baseurl + '/users/' + self.user['id'] + '/playlists'

@@ -114,7 +114,11 @@ class Spotify:
         if typee == 'albums': count = 20
         i = 0
         while i < len(ids):
-            tempurl = url + ','.join(ids[i:i + count])
+            try:
+                tempurl = url + ','.join(ids[i:i + count])
+            except TypeError as err:
+                raise SpotifyError(err.__str__)
+
             r = requests.get(tempurl, headers=self.headers)
             status_code = r.status_code
             if status_code != 200:
