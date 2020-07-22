@@ -35,7 +35,7 @@ class Spotify:
         if r.status_code == 200:
             return r.json()
         else:
-            raise SpotifyError('Error! Could not retrieve playlists for ' + userid)
+            raise SpotifyError('Error! Could not retrieve user for ' + userid)
 
     def getUserPlaylists(self, user):
         userid = user['id']
