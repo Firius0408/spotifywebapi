@@ -7,6 +7,7 @@ from .user import User
 class Spotify:
 
     baseurl = 'https://api.spotify.com/v1'
+    session = requests.Session()
 
     def __init__(self, client_id, client_secret):
         self.client_id = client_id
@@ -17,10 +18,10 @@ class Spotify:
             'client_id': client_id,
             'client_secret': client_secret
             }
-        r = requests.post(url, data=payload)
+        r = self.session.post(url, data=payload)
         if (r.status_code == 200):
             self.accessToken = r.json()['access_token']
-            self.headers = {'Authorization': 'Bearer ' + self.accessToken}
+            self.session.headers.update({'Authorization': 'Bearer ' + self.accessToken})
         else:
             raise SpotifyError('Error! Could not successfully obtain access token with these credentials')
 
@@ -30,7 +31,7 @@ class Spotify:
     def getUser(self, userid):
         userid = userid.replace('spotify:user:', '')
         url = self.baseurl + '/users/' + userid
-        r = requests.get(url, headers=self.headers)
+        r = self.session.get(url)
         if r.status_code == 200:
             return r.json()
         else:
@@ -44,7 +45,7 @@ class Spotify:
         playlists = []
         url = self.baseurl + '/users/' + userid + '/playlists?limit=50'
         while True:
-            r = requests.get(url, headers=self.headers)
+            r = self.session.get(url)
             status_code = r.status_code
             if status_code != 200:
                 if status_code == 429:
@@ -75,7 +76,7 @@ class Spotify:
     def getPlaylistFromId(self, playlist):
         playlistid = playlist.replace('spotify:playlist:', '')
         url = self.baseurl + '/playlists/' + playlistid
-        r = requests.get(url, headers=self.headers)
+        r = self.session.get(url)
         if r.status_code == 200:
             return r.json()
         else:
@@ -92,7 +93,7 @@ class Spotify:
 
         tracks = []
         while True:
-            r = requests.get(url, headers=self.headers)
+            r = self.session.get(url)
             status_code = r.status_code
             if status_code != 200:
                 if status_code == 429:
@@ -118,7 +119,7 @@ class Spotify:
             except TypeError as err:
                 raise SpotifyError(err.__str__)
 
-            r = requests.get(tempurl, headers=self.headers)
+            r = self.session.get(tempurl)
             status_code = r.status_code
             if status_code != 200:
                 if status_code == 429:
@@ -144,7 +145,7 @@ class Spotify:
     def search(self, string, *searchtype, limit=20):
         string = string.replace(' ', '%20')
         url = self.baseurl + '/search?q=' + string + '&type=' + ','.join(searchtype) + '&limit=' + str(limit)
-        r = requests.get(url, headers=self.headers)
+        r = self.session.get(url)
         status_code = r.status_code
         if status_code != 200:
             raise StatusCodeError(str(status_code))
@@ -157,7 +158,7 @@ class Spotify:
         i = 0
         while i < len(trackids):
             tempurl = url + ','.join(trackids[i:i + 100])
-            r = requests.get(tempurl, headers=self.headers)
+            r = self.session.get(tempurl)
             status_code = r.status_code
             if status_code != 200:
                 if status_code == 429:
@@ -173,7 +174,7 @@ class Spotify:
 
     def getAudioAnalysis(self, trackid):
         url = self.baseurl + '/audio-analysis/' + trackid
-        r = requests.get(url, headers=self.headers)
+        r = self.session.get(url)
         status_code = r.status_code
         if status_code != 200:
             raise StatusCodeError(str(status_code))
