@@ -49,7 +49,7 @@ class User:
         r = self.session.post(url, headers=self.contentHeaders, data=payload)
         status_code = r.status_code
         if status_code != 200 and status_code != 201:
-            raise StatusCodeError("Error! API returned error code " + str(status_code))
+            raise StatusCodeError(str(status_code))
 
         return r.json()
     
@@ -65,7 +65,7 @@ class User:
         r = self.session.put(url, headers=self.contentHeaders, data=payload)
         status_code = r.status_code
         if status_code != 200:
-            raise StatusCodeError("Error! API returned error code " + str(status_code))
+            raise StatusCodeError(str(status_code))
 
     def addSongsToPlaylist(self, playlistid, uris):
         url = self.baseurl + '/playlists/' + playlistid + '/tracks?uris='
@@ -74,7 +74,7 @@ class User:
             r = self.session.post(tempurl)
             status_code = r.status_code
             if status_code != 201:
-                raise StatusCodeError("Error! API returned error code " + str(status_code))
+                raise StatusCodeError(str(status_code))
 
     def removeSongsFromPlaylist(self, playlistid, uris):
         url = self.baseurl + '/playlists/' + playlistid + '/tracks'
@@ -83,7 +83,7 @@ class User:
             r = self.session.delete(url, headers=self.contentHeaders, data=json.dumps(tracks))
             status_code = r.status_code
             if status_code != 200:
-                raise StatusCodeError("Error! API returned error code " + str(status_code))
+                raise StatusCodeError(str(status_code))
 
     def replacePlaylistItems(self, playlistid, uris):
         if len(uris) > 100:
@@ -93,7 +93,7 @@ class User:
         r = self.session.put(url)
         status_code = r.status_code
         if status_code != 201:
-            raise StatusCodeError("Error! API returned error code " + str(status_code))
+            raise StatusCodeError(str(status_code))
 
     def getTop(self, term, typee, limit=20):
         url = self.baseurl + '/me/top/' + typee + '?limit=' + str(limit) + '&time_range=' + term
@@ -114,11 +114,11 @@ class User:
         r = self.session.put(url, headers=self.contentHeaders, data=json.dumps({'public': public}))
         status_code = r.status_code
         if status_code != 200:
-            raise StatusCodeError("Error! API returned error code " + str(status_code))
+            raise StatusCodeError(str(status_code))
 
     def unfollowPlaylist(self, playlistid):
         url = self.baseurl + '/playlists/' + playlistid + '/followers'
         r = self.session.delete(url)
         status_code = r.status_code
         if status_code != 200:
-            raise StatusCodeError("Error! API returned error code " + str(status_code))
+            raise StatusCodeError(str(status_code))
