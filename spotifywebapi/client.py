@@ -51,7 +51,7 @@ class Spotify:
                     time.sleep(float(r.headers['Retry-After']))
                     continue
 
-                raise StatusCodeError('Error! API returned error code ' + str(status_code))
+                raise StatusCodeError(str(status_code))
 
             playlists.extend(r.json()['items'])
             url = r.json()['next']
@@ -99,7 +99,7 @@ class Spotify:
                     time.sleep(float(r.headers['Retry-After']))
                     continue
 
-                raise StatusCodeError('Error! API returned error code ' + str(status_code))
+                raise StatusCodeError(str(status_code))
 
             tracks.extend(r.json()['items'])
             url = r.json()['next']
@@ -125,7 +125,7 @@ class Spotify:
                     time.sleep(float(r.headers['Retry-After']))
                     continue
 
-                raise StatusCodeError('Error! API returned error code ' + str(status_code))
+                raise StatusCodeError(str(status_code))
 
             results.extend(r.json()[typee])
             i += count 
@@ -147,7 +147,7 @@ class Spotify:
         r = requests.get(url, headers=self.headers)
         status_code = r.status_code
         if status_code != 200:
-            raise StatusCodeError('Error! API returned error code ' + str(status_code))
+            raise StatusCodeError(str(status_code))
         
         return r.json()
 
@@ -164,7 +164,7 @@ class Spotify:
                     time.sleep(float(r.headers['Retry-After']))
                     continue
 
-                raise StatusCodeError('Error! API returned error code ' + str(status_code))
+                raise StatusCodeError(str(status_code))
 
             results.extend(r.json()['audio_features'])
             i += 100
@@ -176,6 +176,6 @@ class Spotify:
         r = requests.get(url, headers=self.headers)
         status_code = r.status_code
         if status_code != 200:
-            raise StatusCodeError('Error! API returned error code ' + str(status_code))
+            raise StatusCodeError(str(status_code))
         
         return r.json()
