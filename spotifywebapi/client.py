@@ -107,7 +107,7 @@ class Spotify:
             if url is None:
                 return tracks
 
-    def getItemsFromIds(self, ids: list, typee: str) -> list[dict]:
+    def getItemsFromIds(self, ids: list[str], typee: str) -> list[dict]:
         url = self.baseurl + '/' + typee + '?ids='
         results = []
         count = 50
@@ -152,7 +152,7 @@ class Spotify:
         
         return r.json()
 
-    def getAudioFeatures(self, trackids: list) -> list[dict]:
+    def getAudioFeatures(self, trackids: list[str]) -> list[dict]:
         url = self.baseurl + '/audio-features?ids='
         results = []
         i = 0
@@ -172,7 +172,7 @@ class Spotify:
 
         return results
 
-    def getAudioAnalysis(self, trackid) -> dict:
+    def getAudioAnalysis(self, trackid: str) -> dict:
         url = self.baseurl + '/audio-analysis/' + trackid
         r = self.session.get(url)
         status_code = r.status_code
