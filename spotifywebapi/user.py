@@ -8,7 +8,7 @@ class User:
     baseurl = 'https://api.spotify.com/v1'
     session = requests.Session()
 
-    def __init__(self, client, refreshToken, accessToken):
+    def __init__(self, client: 'Spotify', refreshToken: str, accessToken: str):
         self.client = client
         self.refreshToken = refreshToken
         self.accessToken = accessToken
@@ -21,23 +21,23 @@ class User:
         else:
             raise SpotifyError('Error! Could not retrieve user data')
 
-    def getClient(self):
+    def getClient(self) -> 'Spotify':
         return self.client
 
-    def getUser(self):
+    def getUser(self) -> dict:
         return self.user
 
-    def getPlaylists(self):
+    def getPlaylists(self) -> list[dict]:
         try:
             return self.playlists
         except AttributeError:
             return self.refreshPlaylists()
         
-    def refreshPlaylists(self):
+    def refreshPlaylists(self) -> list[dict]:
         self.playlists = self.client.getUserPlaylists(self.user)
         return self.playlists
 
-    def createPlaylist(self, name, public=None, collaborative=None, description=None):
+    def createPlaylist(self, name: str, public: bool = None, collaborative: bool = None, description: str = None) -> dict:
         url = self.baseurl + '/users/' + self.user['id'] + '/playlists'
         data = {
             'name': name,
@@ -53,7 +53,7 @@ class User:
 
         return r.json()
     
-    def changePlaylistDetails(self, playlistid, name=None, public=None, collaborative=None, description=None):
+    def changePlaylistDetails(self, playlistid: str, name: str = None, public: bool = None, collaborative: bool = None, description: str = None) -> None:
         url = self.baseurl + '/playlists/' + playlistid
         data = {
             'name': name,
@@ -67,7 +67,7 @@ class User:
         if status_code != 200:
             raise StatusCodeError(str(status_code))
 
-    def addSongsToPlaylist(self, playlistid, uris):
+    def addSongsToPlaylist(self, playlistid: str, uris: list[str]) -> None:
         url = self.baseurl + '/playlists/' + playlistid + '/tracks?uris='
         for i in range(0, len(uris), 100):
             tempurl = url + ','.join(uris[i:i+100])
@@ -76,7 +76,7 @@ class User:
             if status_code != 201:
                 raise StatusCodeError(str(status_code))
 
-    def removeSongsFromPlaylist(self, playlistid, uris):
+    def removeSongsFromPlaylist(self, playlistid: str, uris: list[str]) -> None:
         url = self.baseurl + '/playlists/' + playlistid + '/tracks'
         for i in range(0, len(uris), 100):
             tracks = {'tracks': [{'uri': j} for j in uris[i:i+100]]}
@@ -85,7 +85,7 @@ class User:
             if status_code != 200:
                 raise StatusCodeError(str(status_code))
 
-    def replacePlaylistItems(self, playlistid, uris):
+    def replacePlaylistItems(self, playlistid: str, uris: list[str]) -> None:
         if len(uris) > 100:
             raise SpotifyError("Error! Too many uris. Max of 100")
 
@@ -95,7 +95,7 @@ class User:
         if status_code != 201:
             raise StatusCodeError(str(status_code))
 
-    def getTop(self, term, typee, limit=20):
+    def getTop(self, term: str, typee: str, limit: int = 20) -> dict:
         url = self.baseurl + '/me/top/' + typee + '?limit=' + str(limit) + '&time_range=' + term
         r = self.session.get(url)
         if r.status_code == 200:
@@ -103,20 +103,20 @@ class User:
         else:
             raise SpotifyError("Error! Could not retrieve top %s for %s" % (typee, self.user['display_name']))
 
-    def getTopArtists(self, term, limit=20):
+    def getTopArtists(self, term: str, limit: int = 20) -> dict:
         return self.getTop(term, 'artists', limit)
 
-    def getTopSongs(self, term, limit=20):
+    def getTopSongs(self, term: str, limit: int = 20) -> dict:
         return self.getTop(term, 'tracks', limit)
 
-    def followPlaylist(self, playlistid, public=True):
+    def followPlaylist(self, playlistid: str, public: bool = True) -> None:
         url = self.baseurl + '/playlists/' + playlistid + '/followers'
         r = self.session.put(url, headers=self.contentHeaders, data=json.dumps({'public': public}))
         status_code = r.status_code
         if status_code != 200:
             raise StatusCodeError(str(status_code))
 
-    def unfollowPlaylist(self, playlistid):
+    def unfollowPlaylist(self, playlistid: str) -> None:
         url = self.baseurl + '/playlists/' + playlistid + '/followers'
         r = self.session.delete(url)
         status_code = r.status_code

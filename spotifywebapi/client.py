@@ -9,7 +9,7 @@ class Spotify:
     baseurl = 'https://api.spotify.com/v1'
     session = requests.Session()
 
-    def __init__(self, client_id, client_secret):
+    def __init__(self, client_id: str, client_secret: str):
         self.client_id = client_id
         self.client_secret = client_secret
         url = 'https://accounts.spotify.com/api/token'
@@ -28,7 +28,7 @@ class Spotify:
     def refreshAccessToken(self):
         self.__init__(self.client_id, self.client_secret)
 
-    def getUser(self, userid):
+    def getUser(self, userid: str) -> dict:
         userid = userid.replace('spotify:user:', '')
         url = self.baseurl + '/users/' + userid
         r = self.session.get(url)
@@ -37,7 +37,7 @@ class Spotify:
         else:
             raise SpotifyError('Error! Could not retrieve user for ' + userid)
 
-    def getUserPlaylists(self, user):
+    def getUserPlaylists(self, user: dict) -> list[dict]:
         userid = user['id']
         if userid is None:
             raise SpotifyError('Error! Could not determine user id from user')
@@ -59,7 +59,7 @@ class Spotify:
             if url is None:
                 return playlists
 
-    def getAuthUser(self, refreshToken):
+    def getAuthUser(self, refreshToken: str) -> User:
         url = 'https://accounts.spotify.com/api/token'
         payload = {
                 'grant_type': 'refresh_token',
@@ -73,7 +73,7 @@ class Spotify:
         else:
             raise SpotifyError('Error! Could not authenticate user with refresh token')
 
-    def getPlaylistFromId(self, playlist):
+    def getPlaylistFromId(self, playlist: str) -> dict:
         playlistid = playlist.replace('spotify:playlist:', '')
         url = self.baseurl + '/playlists/' + playlistid
         r = self.session.get(url)
@@ -82,7 +82,7 @@ class Spotify:
         else:
             raise SpotifyError('Error! Could not retrieve playlist from ' + playlist)
 
-    def getTracksFromItem(self, item):
+    def getTracksFromItem(self, item: dict) -> list[dict]:
         try:
             url = item['tracks']['href']
         except TypeError:
@@ -107,7 +107,7 @@ class Spotify:
             if url is None:
                 return tracks
 
-    def getItemsFromIds(self, ids, typee):
+    def getItemsFromIds(self, ids: list, typee: str) -> list[dict]:
         url = self.baseurl + '/' + typee + '?ids='
         results = []
         count = 50
@@ -133,16 +133,16 @@ class Spotify:
 
         return results
 
-    def getTracksFromIds(self, trackids):
+    def getTracksFromIds(self, trackids: list[str]) -> list[dict]:
         return self.getItemsFromIds(trackids, 'tracks')
 
-    def getAlbumsFromIds(self, albumids):
+    def getAlbumsFromIds(self, albumids: list[str]) -> list[dict]:
         return self.getItemsFromIds(albumids, 'albums')
 
-    def getArtistsFromIds(self, artistids):
+    def getArtistsFromIds(self, artistids: list[str]) -> list[dict]:
         return self.getItemsFromIds(artistids, 'artists')
 
-    def search(self, string, *searchtype, limit=20):
+    def search(self, string: str, *searchtype: str, limit: int = 20) -> dict:
         string = string.replace(' ', '%20')
         url = self.baseurl + '/search?q=' + string + '&type=' + ','.join(searchtype) + '&limit=' + str(limit)
         r = self.session.get(url)
@@ -152,7 +152,7 @@ class Spotify:
         
         return r.json()
 
-    def getAudioFeatures(self, trackids):
+    def getAudioFeatures(self, trackids: list) -> list[dict]:
         url = self.baseurl + '/audio-features?ids='
         results = []
         i = 0
@@ -172,7 +172,7 @@ class Spotify:
 
         return results
 
-    def getAudioAnalysis(self, trackid):
+    def getAudioAnalysis(self, trackid) -> dict:
         url = self.baseurl + '/audio-analysis/' + trackid
         r = self.session.get(url)
         status_code = r.status_code
