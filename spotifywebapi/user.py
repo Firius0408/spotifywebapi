@@ -6,12 +6,12 @@ from .exceptions import StatusCodeError, SpotifyError
 class User:
 
     baseurl = 'https://api.spotify.com/v1'
-    session = requests.Session()
 
     def __init__(self, client: 'Spotify', refreshToken: str, accessToken: str):
         self.client = client
         self.refreshToken = refreshToken
         self.accessToken = accessToken
+        self.session = requests.Session()
         self.session.headers.update({'Authorization': 'Bearer ' + accessToken})
         self.contentHeaders = {'Content-Type': 'application/json'}
         url = self.baseurl + '/me'

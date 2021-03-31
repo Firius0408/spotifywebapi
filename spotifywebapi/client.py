@@ -7,11 +7,11 @@ from .user import User
 class Spotify:
 
     baseurl = 'https://api.spotify.com/v1'
-    session = requests.Session()
 
     def __init__(self, client_id: str, client_secret: str):
         self.client_id = client_id
         self.client_secret = client_secret
+        self.session = requests.Session()
         url = 'https://accounts.spotify.com/api/token'
         payload = {
             'grant_type': 'client_credentials',
