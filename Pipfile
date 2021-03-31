@@ -5,6 +5,5 @@ name = "pypi"
 
 [packages]
 requests = "*"
-python-dotenv = "*"
 
 [dev-packages]
