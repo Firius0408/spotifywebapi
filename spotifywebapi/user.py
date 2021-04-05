@@ -1,5 +1,6 @@
 import requests
 import json
+from typing import List, Dict
 
 from .exceptions import StatusCodeError, SpotifyError
 
@@ -24,16 +25,16 @@ class User:
     def getClient(self) -> 'Spotify':
         return self.client
 
-    def getUser(self) -> dict:
+    def getUser(self) -> Dict:
         return self.user
 
-    def getPlaylists(self) -> list[dict]:
+    def getPlaylists(self) -> List[Dict]:
         try:
             return self.playlists
         except AttributeError:
             return self.refreshPlaylists()
         
-    def refreshPlaylists(self) -> list[dict]:
+    def refreshPlaylists(self) -> List[Dict]:
         self.playlists = self.client.getUserPlaylists(self.user)
         return self.playlists
 
@@ -67,7 +68,7 @@ class User:
         if status_code != 200:
             raise StatusCodeError(str(status_code))
 
-    def addSongsToPlaylist(self, playlistid: str, uris: list[str]) -> None:
+    def addSongsToPlaylist(self, playlistid: str, uris: List[str]) -> None:
         url = self.baseurl + '/playlists/' + playlistid + '/tracks?uris='
         for i in range(0, len(uris), 100):
             tempurl = url + ','.join(uris[i:i+100])
@@ -76,7 +77,7 @@ class User:
             if status_code != 201:
                 raise StatusCodeError(str(status_code))
 
-    def removeSongsFromPlaylist(self, playlistid: str, uris: list[str]) -> None:
+    def removeSongsFromPlaylist(self, playlistid: str, uris: List[str]) -> None:
         url = self.baseurl + '/playlists/' + playlistid + '/tracks'
         for i in range(0, len(uris), 100):
             tracks = {'tracks': [{'uri': j} for j in uris[i:i+100]]}
@@ -85,7 +86,7 @@ class User:
             if status_code != 200:
                 raise StatusCodeError(str(status_code))
 
-    def replacePlaylistItems(self, playlistid: str, uris: list[str]) -> None:
+    def replacePlaylistItems(self, playlistid: str, uris: List[str]) -> None:
         if len(uris) > 100:
             raise SpotifyError("Error! Too many uris. Max of 100")
 
@@ -95,7 +96,7 @@ class User:
         if status_code != 201:
             raise StatusCodeError(str(status_code))
 
-    def getTop(self, term: str, typee: str, limit: int = 20) -> dict:
+    def getTop(self, term: str, typee: str, limit: int = 20) -> Dict:
         url = self.baseurl + '/me/top/' + typee + '?limit=' + str(limit) + '&time_range=' + term
         r = self.session.get(url)
         if r.status_code == 200:
@@ -103,10 +104,10 @@ class User:
         else:
             raise SpotifyError("Error! Could not retrieve top %s for %s" % (typee, self.user['display_name']))
 
-    def getTopArtists(self, term: str, limit: int = 20) -> dict:
+    def getTopArtists(self, term: str, limit: int = 20) -> Dict:
         return self.getTop(term, 'artists', limit)
 
-    def getTopSongs(self, term: str, limit: int = 20) -> dict:
+    def getTopSongs(self, term: str, limit: int = 20) -> Dict:
         return self.getTop(term, 'tracks', limit)
 
     def followPlaylist(self, playlistid: str, public: bool = True) -> None:
