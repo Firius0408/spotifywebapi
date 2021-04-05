@@ -5,7 +5,7 @@ with open("README.md", "r") as fh:
 
 setuptools.setup(
     name="spotifywebapi",
-    version="1.1.3",
+    version="1.2.0",
     author="Brian Cheng",
     author_email="brian.cheng@ucla.edu",
     description="A simple Spotify Web API in Python",
@@ -18,6 +18,6 @@ setuptools.setup(
         "License :: OSI Approved :: MIT License",
         "Operating System :: OS Independent",
     ],
-    python_requires='>=3.9',
+    python_requires='>=3.6',
     install_requires=['requests'],
 )
