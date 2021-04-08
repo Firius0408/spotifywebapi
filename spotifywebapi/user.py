@@ -7,6 +7,7 @@ from .exceptions import StatusCodeError, SpotifyError
 class User:
 
     baseurl = 'https://api.spotify.com/v1'
+    contentHeaders = {'Content-Type': 'application/json'}
 
     def __init__(self, client: 'Spotify', refreshToken: str, accessToken: str):
         self.client = client
@@ -14,7 +15,6 @@ class User:
         self.accessToken = accessToken
         self.session = requests.Session()
         self.session.headers.update({'Authorization': 'Bearer ' + accessToken})
-        self.contentHeaders = {'Content-Type': 'application/json'}
         url = self.baseurl + '/me'
         r = self.session.get(url)
         if r.status_code == 200:
@@ -69,10 +69,10 @@ class User:
             raise StatusCodeError(str(status_code))
 
     def addSongsToPlaylist(self, playlistid: str, uris: List[str]) -> None:
-        url = self.baseurl + '/playlists/' + playlistid + '/tracks?uris='
+        url = self.baseurl + '/playlists/' + playlistid + '/tracks'
         for i in range(0, len(uris), 100):
-            tempurl = url + ','.join(uris[i:i+100])
-            r = self.session.post(tempurl)
+            body = {'uris': uris[i:i+100]}
+            r = self.session.post(url, headers=self.contentHeaders, data=json.dumps(body))
             status_code = r.status_code
             if status_code != 201:
                 raise StatusCodeError(str(status_code))
@@ -90,8 +90,9 @@ class User:
         if len(uris) > 100:
             raise SpotifyError("Error! Too many uris. Max of 100")
 
-        url = self.baseurl + '/playlists/' + playlistid + '/tracks?uris=' + ','.join(uris)
-        r = self.session.put(url)
+        url = self.baseurl + '/playlists/' + playlistid + '/tracks'
+        body = {'uris': uris}
+        r = self.session.put(url, headers=self.contentHeaders, data=json.dumps(body))
         status_code = r.status_code
         if status_code != 201:
             raise StatusCodeError(str(status_code))
