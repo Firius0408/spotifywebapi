@@ -3,7 +3,6 @@ import json
 from typing import List, Dict
 
 from .exceptions import StatusCodeError, SpotifyError
-from .client import Spotify
 
 class User:
 
