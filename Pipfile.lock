@@ -1,7 +1,7 @@
 {
     "_meta": {
         "hash": {
-            "sha256": "5c94394d00d5c4a77b76f31dbff3aea8c69fa07469d14ef2e74254bdf5f65fb2"
+            "sha256": "bb2660e4bffd4a2e6a5ffa146118c16c2b66bcf6fac1da676751b2c012a01b5e"
         },
         "pipfile-spec": 6,
         "requires": {
@@ -46,6 +46,10 @@
             ],
             "index": "pypi",
             "version": "==2.25.1"
+        },
+        "spotifywebapi": {
+            "editable": true,
+            "path": "."
         },
         "urllib3": {
             "hashes": [
