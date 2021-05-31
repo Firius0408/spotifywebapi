@@ -8,3 +8,4 @@
 **/__pycache__/**
 *.py
 !setup.py
+!test_*.py
