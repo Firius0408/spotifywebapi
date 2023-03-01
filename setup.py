@@ -7,7 +7,7 @@ setuptools.setup(
     name="spotifywebapi",
     version="1.2.4",
     author="Brian Cheng",
-    author_email="brian.cheng@ucla.edu",
+    author_email="briantc@mit.edu",
     description="A simple Spotify Web API in Python",
     long_description=long_description,
     long_description_content_type="text/markdown",
