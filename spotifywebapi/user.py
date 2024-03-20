@@ -49,7 +49,7 @@ class User:
         payload = json.dumps({k: v for k, v in data.items() if v is not None})
         r = self.session.post(url, headers=self.contentHeaders, data=payload)
         status_code = r.status_code
-        if status_code != 200 and status_code != 201:
+        if status_code != 200 or status_code != 201:
             raise StatusCodeError(str(status_code))
 
         return r.json()
@@ -65,7 +65,7 @@ class User:
         payload = json.dumps({k: v for k, v in data.items() if v is not None})
         r = self.session.put(url, headers=self.contentHeaders, data=payload)
         status_code = r.status_code
-        if status_code != 200:
+        if status_code != 200 or status_code != 201:
             raise StatusCodeError(str(status_code))
 
     def addSongsToPlaylist(self, playlistid: str, uris: List[str]) -> None:
@@ -74,7 +74,7 @@ class User:
             body = {'uris': uris[i:i+100]}
             r = self.session.post(url, headers=self.contentHeaders, data=json.dumps(body))
             status_code = r.status_code
-            if status_code != 201:
+            if status_code != 200 or status_code != 201:
                 raise StatusCodeError(str(status_code))
 
     def removeSongsFromPlaylist(self, playlistid: str, uris: List[str]) -> None:
@@ -94,7 +94,7 @@ class User:
         body = {'uris': uris}
         r = self.session.put(url, headers=self.contentHeaders, data=json.dumps(body))
         status_code = r.status_code
-        if status_code != 201:
+        if status_code != 200 or status_code != 201:
             raise StatusCodeError(str(status_code))
 
     def getTop(self, term: str, typee: str, limit: int = 20) -> Dict:
